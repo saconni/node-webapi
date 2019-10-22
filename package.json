@@ -1,5 +1,5 @@
 {
-  "name": "@saconni/node-webapi",
+  "name": "@saconni/webapi-node",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@saconni/validate": "git+https://github.com/saconni/validate-js.git",
+    "@saconni/validate-js": "git+https://github.com/saconni/validate-js.git",
     "debug": "^4.1.1"
   }
 }
