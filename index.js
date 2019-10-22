@@ -1,6 +1,6 @@
 let fs = require('fs')
 let path = require('path')
-let { validate } = require('@saconni/validate')
+let { validate } = require('@saconni/validate-js')
 let debug = require('debug')('node-webapi')
 
 module.exports.webapi = function (app, options) {
