@@ -35,9 +35,14 @@ module.exports.webapi = function (app, options) {
               return
             }
           }
-          let r = middleware(req, res, next)
-          if(r && typeof r.catch === 'function') {
-            r.catch(err => next(err))
+          try {
+            let r = middleware(req, res, next)
+            if(r && typeof r.catch === 'function') {
+              r.catch(err => next(err))
+            }              
+          }
+          catch (err) {
+            next(err)
           }
         })
       })
