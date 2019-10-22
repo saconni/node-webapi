@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@saconni/validate": "file:../validate",
+    "@saconni/validate": "git+https://github.com/saconni/validate-js.git",
     "debug": "^4.1.1"
   }
 }
