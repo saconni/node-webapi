@@ -29,7 +29,7 @@ module.exports.webapi = function (app, options) {
         let middleware = lib[id].handler.apply(null, deps)
         app[lib[id].method](options.base + lib[id].path, (req, res, next) => {
           if(lib[id].request) {
-            err = validate(req, { schema: lib[id].request })
+            err = validate(req, { strict: false, schema: lib[id].request })
             if(err) {
               res.status(400).json(err)
               return
