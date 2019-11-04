@@ -1,11 +1,14 @@
 let fs = require('fs')
 let path = require('path')
 let { validate } = require('@saconni/validate-js')
+let openAPIdocGenerator = require('./openAPIdocGenerator')
 let debug = require('debug')('node-webapi')
 
 module.exports.webapi = function (app, options) {
   debug(`initializing webapi:`)
   debug(options)
+  openAPIdocGenerator.intializateAPIDefinition(options)
+
   fs.readdirSync(options.location).forEach(file => {
     debug(`found file ${file}`)
     if(file.endsWith('.js')) {
@@ -45,7 +48,8 @@ module.exports.webapi = function (app, options) {
             next(err)
           }
         })
+        openAPIdocGenerator.generateAPIDefinition(lib[id])
       })
     }
   })
-}
+} 
