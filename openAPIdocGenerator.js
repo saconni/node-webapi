@@ -65,13 +65,15 @@ module.exports.intializateAPIDefinition = (options) => {
   *     intializateAPIDefinition() must be called before the first call of this function
   * Output:
   *     Create a file named API_definition.yml in the  current directory, containing the yaml structure for the swagger viewer
+  *     Return a valid javascript object for the Swagger editor
   * 
   * Given an endpoint descriptor object, this function will add the corresponding substructures into openAPIdoc
   * Should be called for each *-controller.js file in the project to get the complete yaml file.
   */
 module.exports.generateAPIDefinition = (endpointControllerObject) => {
 
-    openAPIdoc.tags.push({name: endpointControllerObject.path.replace('/',''), description: endpointControllerObject.description})
+    tagDescription = endpointControllerObject.hasOwnProperty('descritpion') ? endpointControllerObject.description: ""
+    openAPIdoc.tags.push({name: endpointControllerObject.path.replace('/',''), description: tagDescription})
     openAPIdoc.paths[endpointControllerObject.path] = {}
     openAPIdoc.paths[endpointControllerObject.path][endpointControllerObject.method] = {}
     openAPIdoc.paths[endpointControllerObject.path][endpointControllerObject.method]['tags'] = [endpointControllerObject.path.replace('/','')]
@@ -82,9 +84,12 @@ module.exports.generateAPIDefinition = (endpointControllerObject) => {
         requestSchema = endpointControllerObject.request.body.schema
 
         build_OpenAPI_Schema(openAPIRequestSchema, requestSchema)
+        requestName = endpointControllerObject.request.hasOwnProperty('name') ? endpointControllerObject.request.name:""
+        requestDescription = endpointControllerObject.request.hasOwnProperty('description') ? endpointControllerObject.request.description:""
+
         openAPIdoc.paths[endpointControllerObject.path][endpointControllerObject.method]['parameters'] = 
-                    [{name: endpointControllerObject.request.name, in: 'body', 
-                    description: endpointControllerObject.request.description, required: true, schema: openAPIRequestSchema}]
+                    [{name: requestName, in: 'body', description: requestDescription, 
+                    required: true, schema: openAPIRequestSchema}]
     }
 
     openAPIdoc.paths[endpointControllerObject.path][endpointControllerObject.method]['responses'] = {default: {description:'none'}}
@@ -92,8 +97,10 @@ module.exports.generateAPIDefinition = (endpointControllerObject) => {
         openAPIResponseSchema = {}
         responseSchema = endpointControllerObject.response.body.schema
         build_OpenAPI_Schema(openAPIResponseSchema, responseSchema)
+        responseDescription = endpointControllerObject.response.hasOwnProperty('description') ? endpointControllerObject.response.description:""
+
         openAPIdoc.paths[endpointControllerObject.path][endpointControllerObject.method]['responses'] = 
-            {200: {description:endpointControllerObject.response.description, schema:openAPIResponseSchema}} 
+            {200: {description:responseDescription, schema:openAPIResponseSchema}} 
     }
     
     fs.writeFile('./API_definition.yml', yaml.safeDump(openAPIdoc), (err) => {
@@ -102,5 +109,7 @@ module.exports.generateAPIDefinition = (endpointControllerObject) => {
             throw new Error('API_definition.yml was not successfully created')
         }
     })
+
+    return openAPIdoc
 
 }

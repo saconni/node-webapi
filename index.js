@@ -48,7 +48,10 @@ module.exports.webapi = function (app, options) {
             next(err)
           }
         })
-        openAPIdocGenerator.generateAPIDefinition(lib[id])
+        
+        app.get('/gvr-swagger', (req,res) => 
+          res.redirect('https://editor.swagger.io/?spec=' + 
+                        openAPIdocGenerator.generateAPIDefinition(lib[id])))
       })
     }
   })
