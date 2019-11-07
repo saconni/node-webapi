@@ -3,8 +3,11 @@ let path = require('path')
 let { validate } = require('@saconni/validate-js')
 let openAPIdocGenerator = require('./openAPIdocGenerator')
 let debug = require('debug')('node-webapi')
+let swaggerUi = require('swagger-ui-express');
 
-module.exports.webapi = function (app, options) {
+let openAPIjson = {}
+
+let webapi = module.exports.webapi = function (app, options) {
   debug(`initializing webapi:`)
   debug(options)
   openAPIdocGenerator.intializateAPIDefinition(options)
@@ -49,10 +52,10 @@ module.exports.webapi = function (app, options) {
           }
         })
         
-        app.get('/gvr-swagger', (req,res) => 
-          res.redirect('https://editor.swagger.io/?spec=' + 
-                        openAPIdocGenerator.generateAPIDefinition(lib[id])))
+        openAPIjson = openAPIdocGenerator.generateAPIDefinition(lib[id])
       })
     }
   })
+
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openAPIjson));
 } 
