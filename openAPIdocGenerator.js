@@ -73,8 +73,16 @@ function updateTags(endpointControllerObject){
             newTagName = endpointControllerObject.path.replace('/','')
         }
     }
-    //if it's a new tag
-    if((newTagName !== "") && (openAPIdoc.tags.indexOf(newTagName) == -1)){
+    isANewTag = true
+    if(newTagName !== ""){
+        for(var i = 0; i < openAPIdoc.tags.length; i++) {
+            if(!(openAPIdoc.tags[i].name.localeCompare(newTagName))){
+                isANewTag = false
+                break
+            }
+        }
+    }
+    if(isANewTag){
         openAPIdoc.tags.push({name: newTagName, description: tagDescription})
     }
 }
