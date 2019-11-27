@@ -8,9 +8,13 @@ let swaggerUi = require('swagger-ui-express');
 let openAPIjson = {}
 
 let webapi = module.exports.webapi = function (app, options) {
+  options = options || {}
   debug(`initializing webapi:`)
   debug(options)
-  openAPIdocGenerator.intializateAPIDefinition(options)
+  
+  if(options.generateDoc) {
+    openAPIdocGenerator.intializateAPIDefinition(options)
+  }
 
   fs.readdirSync(options.location).forEach(file => {
     debug(`found file ${file}`)
@@ -52,10 +56,14 @@ let webapi = module.exports.webapi = function (app, options) {
           }
         })
         
-        openAPIjson = openAPIdocGenerator.generateAPIDefinition(lib[id])
+        if(options.generateDoc) {
+          openAPIjson = openAPIdocGenerator.generateAPIDefinition(lib[id])
+        }
       })
     }
   })
 
-  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openAPIjson));
+  if(options.generateDoc) {
+    app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openAPIjson));
+  }
 } 
